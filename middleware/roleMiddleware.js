@@ -1,12 +1,11 @@
 module.exports = function(...allowedRoles) {
     return (req, res, next) => {
-        const userRole = req.headers.role; // get role from request
-
-        if (!userRole) {
-            return res.status(401).json({ error: "No role provided" });
+        // ✅ Prevent crash
+        if (!req.user) {
+            return res.status(401).json({ error: "User not authenticated" });
         }
 
-        if (!allowedRoles.includes(userRole)) {
+        if (!allowedRoles.includes(req.user.role)) {
             return res.status(403).json({ error: "Access denied" });
         }
 
